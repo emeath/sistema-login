@@ -31,19 +31,19 @@ function insereInfoLoginNaTela(mensagem) {
 }
 
 
-function logarNoSistema(event) {
+async function logarNoSistema(event) {
 
   event.preventDefault();
 
   let usuario_formulario = document.querySelector("[data-js='user']").value;
   let senha_formulario = document.querySelector("[data-js='passwd']").value;
 
-  let resultado_usuario = usuarioExiste(usuario_formulario);
+  let resultado_usuario = await usuarioExiste(usuario_formulario);
 
   if (resultado_usuario == true) {
 
     // usuario existe
-    let resultado_senha = senhaUsuarioCorreta(usuario_formulario, senha_formulario);
+    let resultado_senha = await senhaUsuarioCorreta(usuario_formulario, senha_formulario);
 
     if (resultado_senha == true) {
       console.log("LOGIN REALIZADO COM SUCESSO! Bem vindo, " + usuario_formulario + "!");
@@ -57,12 +57,11 @@ function logarNoSistema(event) {
 
   } else {
     console.log("Usuario ou senha incorretos! Tente novamente");
-    insereInfoLoginNaTela("Usuario ou senha incorretos! Tente novamente")
+    insereInfoLoginNaTela("Usuario ou senha incorretos! Tente novamente xxxxx")
   }
 }
 
 async function getUsernameFromAPI(usuario) {
-
   const options = {
     method: "POST",
     headers: {
@@ -70,16 +69,37 @@ async function getUsernameFromAPI(usuario) {
     },
     body: JSON.stringify({username: usuario})
   }
-
   const response = await fetch("http://localhost:4000/auth_username", options);
   const data = await response.json()
-
   if(data.length == 0)
     return false
   else
     return true
-
 }
+
+const getUserFromAPI = async (usuario, senha) => {
+
+  const payload = { username: usuario,
+    password: senha
+  }
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  }
+  const response = await fetch("http://localhost:4000/auth", options);
+  const data = await response.json();
+  if(data.length==0)
+    return false
+  
+    return true
+}
+
+
+
+
 
 async function usuarioExiste(usuario) {
 
@@ -95,22 +115,12 @@ async function usuarioExiste(usuario) {
 
 }
 
-function senhaUsuarioCorreta(usuario, senha) {
+async function senhaUsuarioCorreta(usuario, senha) {
 
   let usuarioAlvo = {};
   let senha_usuario_correta = false;
 
-  bancoDeDados.forEach((element) => {
-    if (usuario == element.user) {
-      usuarioAlvo = element;
-    }
-  })
-
-  if (usuarioAlvo.password == senha) {
-    senha_usuario_correta = true;
-  } else {
-    senha_usuario_correta = false;
-  }
+  senha_usuario_correta = await getUserFromAPI(usuario, senha)
 
   return senha_usuario_correta;
 

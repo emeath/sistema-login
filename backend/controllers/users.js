@@ -3,7 +3,7 @@ import { db } from "../db.js"
 export const getUser = (req, res) => {
     const { username, password } = req.body;
     // console.log(req.body)
-    const myQuery = `SELECT * FROM sistema.users 
+    const myQuery = `SELECT name FROM sistema.users 
     WHERE name = '${username}' AND pwd = '${password}'`
     db.query(myQuery, (err, data) => {
         if(err) {

@@ -13,3 +13,17 @@ export const getUser = (req, res) => {
         return res.status(200).json(data);
     })
 };
+
+export const getUsername = (req, res) => {
+    const { username } = req.body;
+    const myQuery = `SELECT name FROM sistema.users WHERE name = '${username}';`;
+
+
+    
+    db.query(myQuery, (err, data) => {
+        if(err) {
+            return res.status(404).json(err);
+        }
+        return res.status(200).json(data);
+    })
+}

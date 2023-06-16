@@ -50,8 +50,9 @@ async function logarNoSistema(event) {
 
       // Simulate an HTTP redirect:
       window.location.replace("home.html");
+
     } else {
-      console.log("Usuario ou senha incorretos! Tente novamente");
+      console.log("Usuario ou senha incorretos! Tente novamente yyyy");
       insereInfoLoginNaTela("Usuario ou senha incorretos! Tente novamente")
     }
 
@@ -91,10 +92,12 @@ const getUserFromAPI = async (usuario, senha) => {
   }
   const response = await fetch("http://localhost:4000/auth", options);
   const data = await response.json();
+  console.log('daata=> ' + data)
   if(data.length==0)
     return false
-  
+  else {
     return true
+  }
 }
 
 
@@ -117,7 +120,6 @@ async function usuarioExiste(usuario) {
 
 async function senhaUsuarioCorreta(usuario, senha) {
 
-  let usuarioAlvo = {};
   let senha_usuario_correta = false;
 
   senha_usuario_correta = await getUserFromAPI(usuario, senha)
